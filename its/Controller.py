@@ -40,7 +40,7 @@ class Controller(object):
                         self.graph[entryCnt+i][entryCnt+j] = self.graph[entryCnt+j][entryCnt+i] = True if int(tokens[j])==1 else False
 
     def initCanvas(self):
-        print("##########################")
+        #print("##########################")
         #for entry in self.entrys:
         #    entry.draw(self.canvas)
         #for joint in self.joints:
@@ -49,12 +49,8 @@ class Controller(object):
         entrySize = len(self.entrys)
         jointSize = len(self.joints)
         size = entrySize + jointSize
-        print(size)
         for i in range(size):
-            print(i)
             for j in range(i+1,size):
-                print(j)
-                print(self.graph[i][j])
                 if self.graph[i][j]:
                     point1,point2 = self.entrys[i] if i < entrySize else self.joints[i-entrySize],self.entrys[j] if j < entrySize else self.joints[j-entrySize]
                     self.canvas.create_line(point1.x,point2.y,point2.x,point2.y,fill="black")
