@@ -14,7 +14,6 @@ class Vehicle(object):
     def create(self):
         photo = self.picEast
         self.id = self.canvas.create_image(50,60,anchor=NE,image=photo, tag="car")
-        text = self.canvas.create_text(50,60, text="tk test")
         self.canvas.create_oval(100,100,101,101,fill="black")
             
     def __repr__(self):

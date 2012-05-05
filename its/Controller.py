@@ -1,7 +1,5 @@
 from Entry import Entry
 from Joint import Joint
-from Generator import Generator
-from math import *
 
 class Controller(object):
     def __init__(self, _config, _canvas):
@@ -11,10 +9,7 @@ class Controller(object):
         self.graph = None
 
         self.parseConfiguration(_config)
-        print(self.graph)
-        #self.initCanvas()
-
-        self.gen = Generator(range(len(self.entrys)),self.graph)
+        self.initCanvas()
 
     def parseConfiguration(self,fileName):
         X,Y = 0,1
@@ -24,7 +19,7 @@ class Controller(object):
             if line == "#count":
                 entryCnt = int(inFile.readline().strip("\n")[6:]) #entry=.. no pairs of entry connected
                 jointCnt = int(inFile.readline().strip("\n")[6:]) #joint=.. at least one joint
-                self.graph = [[-1]*(entryCnt+jointCnt) for i in range(entryCnt+jointCnt)] #adj matrix
+                self.graph = [[False]*(entryCnt+jointCnt) for i in range(entryCnt+jointCnt)] #adj matrix
             elif line == "#entry":
                 for i in range(entryCnt):
                     coords = [int(token) for token in inFile.readline().strip("\n").split()]
@@ -37,19 +32,15 @@ class Controller(object):
                 for i in range(entryCnt):
                     tokens = inFile.readline().strip("\n").split()
                     for j in range(jointCnt):
-                        self.graph[i][entryCnt+j] = self.graph[entryCnt+j][i] = self.calcDistance(self.entrys[i],self.joints[j]) if int(tokens[j])==1 else -1
+                        self.graph[i][entryCnt+j] = self.graph[entryCnt+j][i] = True if int(tokens[j])==1 else False
             elif line == "#joint_joint":
                 for i in range(jointCnt):
                     tokens = inFile.readline().strip("\n").split()
                     for j in range(jointCnt):
-                        self.graph[entryCnt+i][entryCnt+j] = self.graph[entryCnt+j][entryCnt+i] = self.calcDistance(self.joints[i],self.joints[j]) if int(tokens[j])==1 else -1
-
-    def calcDistance(self,p1,p2):
-        return int(sqrt(pow(p1.x-p2.x,2)+pow(p1.y-p2.y,2)))
-
+                        self.graph[entryCnt+i][entryCnt+j] = self.graph[entryCnt+j][entryCnt+i] = True if int(tokens[j])==1 else False
 
     def initCanvas(self):
-        #print("##########################")
+        print("##########################")
         #for entry in self.entrys:
         #    entry.draw(self.canvas)
         #for joint in self.joints:
@@ -58,11 +49,18 @@ class Controller(object):
         entrySize = len(self.entrys)
         jointSize = len(self.joints)
         size = entrySize + jointSize
+        print(size)
         for i in range(size):
+            print(i)
             for j in range(i+1,size):
-                if self.graph[i][j] > 0:
-                    point1,point2 = self.entrys[i] if i < entrySize else self.joints[i-entrySize],self.entrys[j] if j < entrySize else self.joints[j-entrySize]
-                    self.canvas.create_line(point1.x,point2.y,point2.x,point2.y,fill="black")
+                print(j)
+                print(self.graph[i][j])
+                if self.graph[i][j]:
+                    point1 = self.entrys[i] if i < entrySize else self.joints[i-entrySize]
+                    point2 = self.entrys[j] if j < entrySize else self.joints[j-entrySize]
+                    print(point1.x, point1.y)
+                    print(point2.x, point2.y)
+                    self.canvas.create_line(point1.x * 10, point2.y * 10, point2.x * 10, point2.y * 10,fill="black")
         
     
     def tick(self):
