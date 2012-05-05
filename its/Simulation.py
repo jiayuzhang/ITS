@@ -1,5 +1,4 @@
-from Tkinter import *
-#from Tkinter import tk
+from tkinter import *
 from Vehicle import Vehicle
 from Controller import Controller
 
@@ -18,10 +17,12 @@ class Simulation(Frame):
 
         self.canvas = Canvas(self)
         self.canvas.grid(column=1, row=1)
+#	self.canvas.pack(expand=YES, fill=BOTH)
 
-	vehicle = Vehicle(1,1)
-	vehicle.draw(self.canvas)
+        self.vehicle = Vehicle(1,1)
+        self.vehicle.draw(self.canvas)
 
+	
     def initEvents(self):
         #for panel
         pass
