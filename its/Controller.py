@@ -36,12 +36,12 @@ class Controller(object):
                     for j in range(jointCnt):
                         self.graph[entryCnt+i][entryCnt+j] = self.graph[entryCnt+j][entryCnt+i] = True if int(tokens[j])==1 else False
 
-    def initCanvas():
+    def initCanvas(self):
         for entry in self.entrys:
             entry.draw(self.canvas)
         for joint in self.joints:
             joint.draw(self.canvas)
-
+        
         
         
     
