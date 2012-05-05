@@ -1,21 +1,26 @@
 from Tkinter import *
-from Tkinter import tk
+#from Tkinter import tk
+from Vehicle import Vehicle
+from Controller import Controller
 
 class Simulation(Frame):
     def __init__(self, root, config):
         Frame.__init__(self, root, height=500, width=500)
-        self.grid(column=0,row=0, sticky=N+E+S+W)
+        self.grid(column=2,row=1, sticky=N+E+S+W)
 
         self.initWidgets()
         self.initEvents()
         self.initController(config)
-        
+
     def initWidgets(self):
         self.btn = Button(self,text="Test")
-        self.btn.grid()
+        self.btn.grid(column=2, row=1)
 
         self.canvas = Canvas(self)
-        self.canvas.grid()
+        self.canvas.grid(column=1, row=1)
+
+	vehicle = Vehicle(1,1)
+	vehicle.draw(self.canvas)
 
     def initEvents(self):
         #for panel
@@ -35,13 +40,11 @@ class Simulation(Frame):
 def main():
     root = Tk()
     root.title("Intelligent Transportation Simulation")
-    
+
     sm = Simulation(root,config="init.config")
-    sm.start()
+    #sm.start()
 
     root.mainloop()
 
-
 if __name__ == '__main__':
     main()
-
