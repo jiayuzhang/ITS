@@ -61,8 +61,11 @@ class Controller(object):
             print(i)
             for j in range(i+1,size):
                 if self.graph[i][j] > 0:
-                    point1,point2 = self.entrys[i] if i < entrySize else self.joints[i-entrySize],self.entrys[j] if j < entrySize else self.joints[j-entrySize]
-                    self.canvas.create_line(point1.x,point2.y,point2.x,point2.y,fill="black")
+                    point1 = self.entrys[j] if j < entrySize else self.joints[j-entrySize]
+                    point2 = self.entrys[i] if i < entrySize else self.joints[i-entrySize]
+
+                    self.canvas.create_line(point1.x*100+50,point1.y*100+50,point2.x*100+50,point2.y*100+50,fill="black", width=12)
+                    self.canvas.create_line(point1.x*100+50,point1.y*100+50,point2.x*100+50,point2.y*100+50,fill="gray", width=10)
 
     
     def tick(self):

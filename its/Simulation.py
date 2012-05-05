@@ -7,7 +7,7 @@ import time
 
 class Simulation(Frame):
     def __init__(self, root, config):
-        Frame.__init__(self, root, height=500, width=500)
+        Frame.__init__(self, root, height=700, width=900)
         self.grid(column=3,row=2, sticky=N+E+S+W)
         self.status = "stop"
      
