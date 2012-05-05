@@ -3,5 +3,5 @@ class Point(object):
         self.x = _x
         self.y = _y
 
-    def draw(self):
+    def draw(self,canvas):
         pass
