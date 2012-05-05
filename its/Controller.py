@@ -6,7 +6,7 @@ class Controller(object):
         self.graph = None
 
         self.parseConfiguration(_config)
-        #self.initCanvas()
+        self.initCanvas()
 
     def parseConfiguration(self,fileName):
         X,Y = 0,1
@@ -14,8 +14,8 @@ class Controller(object):
         for line in inFile:
             line = line.strip("\n")
             if line == "#count":
-                entryCnt = inFile.readline().strip("\n")[:6] #entry=.. no pairs of entry connected
-                jointCnt = inFile.readline().strip("\n")[:6] #joint=.. at least one joint
+                entryCnt = int(inFile.readline().strip("\n")[6:]) #entry=.. no pairs of entry connected
+                jointCnt = int(inFile.readline().strip("\n")[6:]) #joint=.. at least one joint
                 self.graph = [[False]*(entryCnt+jointCnt) for i in range(entryCnt+jointCnt)] #adj matrix
             elif line == "#entry":
                 for i in range(entryCnt):
@@ -42,6 +42,7 @@ class Controller(object):
         for joint in self.joints:
             joint.draw(self.canvas)
 
+        
         
     
     def tick(self):
