@@ -14,8 +14,8 @@ class Controller(object):
         for line in inFile:
             line = line.strip("\n")
             if line == "#count":
-                entryCnt = int(inFile.readline().strip("\n")[6:]) #entry=.. no pairs of entry connected
-                jointCnt = int(inFile.readline().strip("\n")[6:]) #joint=.. at least one joint
+                entryCnt = inFile.readline().strip("\n")[:6] #entry=.. no pairs of entry connected
+                jointCnt = inFile.readline().strip("\n")[:6] #joint=.. at least one joint
                 self.graph = [[False]*(entryCnt+jointCnt) for i in range(entryCnt+jointCnt)] #adj matrix
             elif line == "#entry":
                 for i in range(entryCnt):
@@ -36,16 +36,14 @@ class Controller(object):
                     for j in range(jointCnt):
                         self.graph[entryCnt+i][entryCnt+j] = self.graph[entryCnt+j][entryCnt+i] = True if int(tokens[j])==1 else False
 
-    def initCanvas(self):
+    def initCanvas():
         for entry in self.entrys:
             entry.draw(self.canvas)
         for joint in self.joints:
             joint.draw(self.canvas)
-        
-        
-        
     
     def tick(self):
         #do logic on models
         #call each existing model draw method by passing canvas
+        
         pass

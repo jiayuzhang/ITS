@@ -19,7 +19,7 @@ class Simulation(Frame):
         self.canvas.grid(column=1, row=1)
 #	self.canvas.pack(expand=YES, fill=BOTH)
 
-        self.vehicle = Vehicle(1,1,"south")
+        self.vehicle = Vehicle(1,"south")
         self.vehicle.draw(self.canvas)
 
 	
@@ -35,8 +35,8 @@ class Simulation(Frame):
         while True:
             #time.sleep a tick time might be couple milliseconds
             self.ctrl.tick()
-            self.canvas.update()
-
+            self.vehicle.move()
+            #self.canvas.update()
 
 def main():
     root = Tk()
