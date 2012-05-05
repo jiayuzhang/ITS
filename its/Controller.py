@@ -8,7 +8,7 @@ class Controller(object):
         self.parseConfiguration(_config)
         self.initCanvas()
 
-    def parseConfiguration(fileName):
+    def parseConfiguration(self,fileName):
         X,Y = 0,1
         inFile = open(fileName, "r")
         for line in inFile:
