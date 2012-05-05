@@ -6,6 +6,7 @@ class Controller(object):
         self.graph = None
 
         self.parseConfiguration(_config)
+        print(self.graph)
         self.initCanvas()
 
     def parseConfiguration(self,fileName):
@@ -41,8 +42,15 @@ class Controller(object):
             entry.draw(self.canvas)
         for joint in self.joints:
             joint.draw(self.canvas)
-        
-        
+
+        entrySize = len(self.entrys)
+        jointSize = len(self.joints)
+        size = entrySize + jointSize
+        for i in range(size):
+            for j in range(i+1,size):
+                if self.graph[i][j]:
+                    point1,point2 = entrys[i] if i < entrySize else joints[i-entrySize],entrys[j] if j < entrySize else joints[j-entrySize]
+                    self.canvas.create_line(point1.x,point2.y,point2.x,point2.y,fill="black")
         
     
     def tick(self):
