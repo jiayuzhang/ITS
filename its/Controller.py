@@ -6,7 +6,7 @@ class Controller(object):
         self.graph = None
 
         self.parseConfiguration(_config)
-        self.initCanvas()
+        #self.initCanvas()
 
     def parseConfiguration(fileName):
         X,Y = 0,1
@@ -41,6 +41,8 @@ class Controller(object):
             entry.draw(self.canvas)
         for joint in self.joints:
             joint.draw(self.canvas)
+
+        
     
     def tick(self):
         #do logic on models
