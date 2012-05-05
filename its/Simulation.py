@@ -19,7 +19,7 @@ class Simulation(Frame):
         self.canvas.grid(column=1, row=1)
 #	self.canvas.pack(expand=YES, fill=BOTH)
 
-        self.vehicle = Vehicle(1,1)
+        self.vehicle = Vehicle(1,1,"south")
         self.vehicle.draw(self.canvas)
 
 	
