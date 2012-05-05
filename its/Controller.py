@@ -24,7 +24,7 @@ class Controller(object):
             if line == "#count":
                 entryCnt = int(inFile.readline().strip("\n")[6:]) #entry=.. no pairs of entry connected
                 jointCnt = int(inFile.readline().strip("\n")[6:]) #joint=.. at least one joint
-                self.graph = [[-1]*(entryCnt+jointCnt) for i in range(entryCnt+jointCnt)] #adj matrix
+                self.graph = [[0]*(entryCnt+jointCnt) for i in range(entryCnt+jointCnt)] #adj matrix
             elif line == "#entry":
                 for i in range(entryCnt):
                     coords = [int(token) for token in inFile.readline().strip("\n").split()]
@@ -42,7 +42,8 @@ class Controller(object):
                 for i in range(jointCnt):
                     tokens = inFile.readline().strip("\n").split()
                     for j in range(jointCnt):
-                        self.graph[entryCnt+i][entryCnt+j] = self.graph[entryCnt+j][entryCnt+i] = self.calcDistance(self.joints[i],self.joints[j]) if int(tokens[j])==1 else -1
+                        if i != j:
+                            self.graph[entryCnt+i][entryCnt+j] = self.graph[entryCnt+j][entryCnt+i] = self.calcDistance(self.joints[i],self.joints[j]) if int(tokens[j])==1 else -1
 
     def calcDistance(self,p1,p2):
         return int(sqrt(pow(p1.x-p2.x,2)+pow(p1.y-p2.y,2)))
@@ -63,7 +64,7 @@ class Controller(object):
                 if self.graph[i][j] > 0:
                     point1,point2 = self.entrys[i] if i < entrySize else self.joints[i-entrySize],self.entrys[j] if j < entrySize else self.joints[j-entrySize]
                     self.canvas.create_line(point1.x,point2.y,point2.x,point2.y,fill="black")
-        
+
     
     def tick(self):
         #do logic on models
