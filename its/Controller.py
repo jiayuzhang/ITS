@@ -34,7 +34,7 @@ class Controller(object):
                 for i in range(entryCnt):
                     tokens = inFile.readline().strip("\n").split()
                     for j in range(jointCnt):
-                        self.graph[i][entryCnt+j] = self.graph[entryCnt+j][i] = True if int(tokens[j])==1 else False
+                        self.graph[i][entryCnt+j] = self.graph[entryCnt+j][i] = self.calcDistance(self.entrys[i],self.joints[j]) if int(tokens[j])==1 else -1
             elif line == "#joint_joint":
                 for i in range(jointCnt):
                     tokens = inFile.readline().strip("\n").split()
