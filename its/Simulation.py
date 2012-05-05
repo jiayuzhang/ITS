@@ -1,31 +1,61 @@
 from tkinter import *
+#from threading import *
+import threading
 from Vehicle import Vehicle
 from Controller import Controller
+import time
 
 class Simulation(Frame):
     def __init__(self, root, config):
         Frame.__init__(self, root, height=500, width=500)
-        self.grid(column=2,row=1, sticky=N+E+S+W)
-
+        self.grid(column=3,row=2, sticky=N+E+S+W)
+        self.status = "stop"
+     
         self.initWidgets()
         self.initEvents()
         self.initController(config)
 
     def initWidgets(self):
-        self.btn = Button(self,text="Test")
-        self.btn.grid(column=2, row=1)
+        self.startBtn = Button(self,text="Start")
+        self.startBtn.grid(column=1, row=1)
+
+        self.stopBtn = Button(self,text="Stop")
+        self.stopBtn.grid(column=2, row=1)
+
+        self.stepBtn = Button(self,text="Step")
+        self.stepBtn.grid(column=3, row=1)
 
         self.canvas = Canvas(self)
-        self.canvas.grid(column=1, row=1)
-#	self.canvas.pack(expand=YES, fill=BOTH)
+        self.canvas.grid(row=2, column=1, columnspan=3)
 
-        self.vehicle = Vehicle(1,"south")
-        self.vehicle.draw(self.canvas)
+        self.vehicle = Vehicle(1,"south",self.canvas)
+        self.vehicle.create()
 
-	
-    def initEvents(self):
-        #for panel
+    def startPressed(self, event):
+        print("start click", threading.currentThread)
+        if self.status == "stop":
+            self.status = "start"
+            self.startBtn["text"] = "Pause"
+            self.start()
+        elif self.status == "start":
+            self.status = "pause"
+            self.startBtn["text"] = "Resume"
+        elif self.status == "pause":
+            self.status = "start"
+            self.startBtn["text"] = "Pause"
+            
+    def stopPressed(self, event):
+        self.status = "stop"
         pass
+
+    def stepPressed(self, event):
+        self.status = "step"
+        pass
+
+    def initEvents(self):
+        self.startBtn.bind("<Button-1>", self.startPressed)
+        self.stopBtn.bind("<Button-1>", self.stopPressed)
+        self.stepBtn.bind("<Button-1>", self.stepPressed)
 
     def initController(self, config):
         self.ctrl = Controller(config, self.canvas)
@@ -36,13 +66,13 @@ class Simulation(Frame):
             #time.sleep a tick time might be couple milliseconds
             self.ctrl.tick()
             self.vehicle.move()
-            #self.canvas.update()
+            time.sleep(0.1)
+            self.canvas.update()
 
 def main():
     root = Tk()
     root.title("Intelligent Transportation Simulation")
-
-    sm = Simulation(root,config="init.config")
+    sm = Simulation(root, config="init.config")
     #sm.start()
 
     root.mainloop()
