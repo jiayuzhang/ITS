@@ -5,6 +5,9 @@ class Route(object):
         self.end = _end
         self.joints = _joints
 
+    
+    
+
     def draw(self,canvas):
         pass
 
