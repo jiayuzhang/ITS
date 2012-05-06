@@ -4,5 +4,7 @@ class Point(object):
         self.y = _y
         self.canvas = _canvas
 
-    def draw(self,canvas):
-        pass
+    def create(self):
+        radius = 30
+        loc = (self.x-radius, self.y-radius, self.x+radius, self.y+radius)
+        self.canvas.draw_oval(loc, fill="black")
