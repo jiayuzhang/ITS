@@ -15,11 +15,9 @@ class Entry(Point):
     #move vehicles from ready queue
     def popVehicle(self):
         if len(self.readyQ):
-            v = self.readyQ.popleft()
+            self.readyQ.popleft()
         if len(self.readyQ):
             self.readyQ[0].create()
-        return v
-
 
     def appendVehicle(self,v):
         self.readyQ.append(v)
@@ -27,4 +25,3 @@ class Entry(Point):
             v.create()
         #draw the upper corner number
     
-        

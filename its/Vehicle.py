@@ -51,6 +51,7 @@ class Vehicle(object):
         self.canvas.move(self.id, self.dx, self.dy)
         self.x = self.x + self.dx
         self.y = self.y + self.dy
+        return True
 
     def __changeDirection(self):
         self.direction = self.__calcDirection()
@@ -88,3 +89,9 @@ class Vehicle(object):
 
     def arrived(self):
         return self.x == self.route.end.x and self.y == self.route.end.y
+
+    def __hash__(self):
+        return self.id
+
+    def __eq__(self,other):
+        return self.id == other.id

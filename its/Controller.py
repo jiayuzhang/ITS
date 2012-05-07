@@ -74,21 +74,20 @@ class Controller(object):
                     self.canvas.create_line(point1.x,point1.y,point2.x,point2.y,fill="orange", width=2, joinstyle="round", capstyle="butt", dash=(5,5))
 
     def automate(self):
-        if random.random() < 0.5:
-        #   print("start automate")
-            startIdx,endIdx,jointIdxAry = self.gen.genVehicle()
-            r = Route(self.entrys[startIdx],self.entrys[endIdx],[self.joints[i-len(self.entrys)] for i in jointIdxAry])
-            v = Vehicle(self.inc,r,self.canvas)
-            self.entrys[startIdx].appendVehicle(v)
-        #   print("Entry%d add %s"%(startIdx,v))
-        #   print("after automate")
-            
+        for i in range(len(self.entrys)):
+            if random.random() < 0.5:
+            #   print("start automate")
+                startIdx,endIdx,jointIdxAry = self.gen.genVehicle()
+                r = Route(self.entrys[startIdx],self.entrys[endIdx],[self.joints[i-len(self.entrys)] for i in jointIdxAry])
+                v = Vehicle(self.inc,r,self.canvas)
+                self.entrys[startIdx].appendVehicle(v)
+            #   print("Entry%d add %s"%(startIdx,v))
+            #   print("after automate")
+
+    
+             
     def tick(self):
         print("---------------------------------------------------")
-        #do logic on models
-        #call each existing model draw method by passing canvas
-        self.automate()
-
         #for i,e in enumerate(self.entrys):
         #    print("%d Entry %s"%(i,str(e.readyQ)))
         
@@ -96,19 +95,69 @@ class Controller(object):
         vehicleCandidates = [e.peekVehicle() for e in self.entrys if e.hasReadyVehicle()]
 
         #main logic, calculate based on current running v and candidate v
+        
+        #self.runningQ += vehicleCandidates
+        conflictGraph = {}
+        #preprocess
+        for v in vehicleCandidates[:]:
+            conflictGraph[v] = []
+            vj = v.route.joints
+            distance = self.calcDistance(v.route.start,vj[0])
+            for i in range(1:len(vj)):
+                if distance in vj[i-1].timeRecord:
+                    vehicleCandidates.remove(v)
+                    break
+                else:
+                    vj[i-1].tmpTimeRecord[v] = distance
+                    if distance not in vj[i-1].tmpReverseTimeRecord:
+                        vj[i-1].tmpReverseTimeRecord[distance] = [v]
+                    else:
+                        for u in vj[i-1].tmpReverseTimeRecord[distance]:
+                            conflictGraph[u].append(v)
+                            conflictGraph[v].append(u)
+                        vj[i-1].tmpReverseTimeRecord[distance].append(v)
+                    if i < len(vj)-1:
+                        distance += self.calcDistance(vj[i-1],vj[i])
+        #graphic algorithm
+        self.vertexCover(conflictGraph)
+        vehicleCandidates = list(conflictGraph.keys())
+        for j in self.joints:
+            j.tmpReverseTimeRecord.clear()
+            for k,vtime in j.tmpTimeRecord.items():
+                if k in vehicleCandidates:
+                    j.timeRecord.add(vtime)
+            j.tmpTimeRecord.clear()
+            
         self.runningQ += vehicleCandidates
-
         
+        self.runningQ[:] = [v for v in self.runningQ if v.move()]
+
+        for j in self.joints:
+            j.dec()
+        #once choosed vehicle left entry, put next vehicle (if available) on start entry
         for v in vehicleCandidates:
-        #    print("%s starts"%v)
             v.route.start.popVehicle()
-        
-        print(self.runningQ)
-        #
-        for v in self.runningQ:
-            v.move()
-        #self.runningQ[:] = [v for v in self.runningQ if v.move()]
 
+        self.automate()
+
+
+
+    def isDisconnected(self,graph):
+        return sum([len(conflict) for conflict in graph.values()]) == 0
+
+    def maxDegreeVertex(self,graph):
+        maxd = -1
+        for k,v in graph.items():
+            if len(v) > maxd:
+                maxv = k
+        return maxv
         
+    def vertexCover(self,graph):
+        while not self.isDisconnected(graph):
+            v = self.maxDegreeVertex(graph)
+            for u in graph[v]:
+                graph[u].remove(v)
+            del graph[v]
+    
         
         
