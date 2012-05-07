@@ -19,7 +19,7 @@ class Vehicle(object):
 
     def create(self):
         #direction = self.calcDirection()
-        self.id = self.canvas.create_image(self.cLoc.x,self.cLoc.y,anchor="center",image=self.photo)
+        self.id = self.canvas.create_image(self.cLoc.x+50,self.cLoc.y+50,anchor="center",image=self.photo)
 
     def __repr__(self):
         return "vehicle(%d)"%self.id
@@ -44,16 +44,16 @@ class Vehicle(object):
         direction = self.__calcDirection()
         self.dx, self.dy = 0, 0
         if direction == "north":
-            self.dy = -1
+            self.dy = -100
             self.photo = self.picNorth
         elif direction == "south":
-            self.dy = 1
+            self.dy = 100
             self.photo = self.picSouth
         elif direction == "east":
-            self.dx = 1
+            self.dx = 100
             self.photo = self.picEast
         elif direction == "west":
-            self.dx = -1
+            self.dx = -100
             self.photo = self.picWest
 
         if self.id is not None:
