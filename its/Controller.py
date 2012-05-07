@@ -1,6 +1,7 @@
 from Entry import Entry
 from Joint import Joint
 from Generator import Generator
+from Route import Route
 from math import *
 
 class Controller(object):
@@ -12,6 +13,10 @@ class Controller(object):
 
         self.parseConfiguration(_config)
         self.initCanvas()
+
+        self.gen = Generator([i for i in range(len(self.entrys))],self.graph)
+        self.readyQ = []
+        self.runningQ = []
 
     def parseConfiguration(self,fileName):
         X,Y = 0,1
@@ -71,4 +76,10 @@ class Controller(object):
     def tick(self):
         #do logic on models
         #call each existing model draw method by passing canvas
-        pass
+        startIdx,endIdx,jointIdxAry = self.gen.genVehicle()
+        r = Route(self.entrys[startIdx],self.entrys[endIdx],[self.joints[i-len(self.entrys)] for i in jointIdxAry])
+        self.readyQ.append(Vehicle(5,r,self.canvas))
+
+
+        
+        
