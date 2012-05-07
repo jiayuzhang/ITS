@@ -4,6 +4,7 @@ from Generator import Generator
 from Route import Route
 from Vehicle import Vehicle
 from math import *
+import random
 
 class Controller(object):
     def __init__(self, _config, _canvas):
@@ -17,6 +18,8 @@ class Controller(object):
         
         self.gen = Generator([i for i in range(len(self.entrys))],self.graph)
         self.runningQ = []
+
+        self.inc = 0
 
     def parseConfiguration(self,fileName):
         X,Y = 0,1
@@ -70,14 +73,23 @@ class Controller(object):
                     self.canvas.create_line(point1.x*100+50,point1.y*100+50,point2.x*100+50,point2.y*100+50,fill="gray", width=10, joinstyle="round", capstyle="projecting")
 
     def automate(self):
-        startIdx,endIdx,jointIdxAry = self.gen.genVehicle()
-        r = Route(self.entrys[startIdx],self.entrys[endIdx],[self.joints[i-len(self.entrys)] for i in jointIdxAry])
-        self.entrys[startIdx].appendVehicle(Vehicle(5,r,self.canvas))
-    
+        if random.random() < 0.5:
+        #   print("start automate")
+            startIdx,endIdx,jointIdxAry = self.gen.genVehicle()
+            r = Route(self.entrys[startIdx],self.entrys[endIdx],[self.joints[i-len(self.entrys)] for i in jointIdxAry])
+            v = Vehicle(self.inc,r,self.canvas)
+            self.entrys[startIdx].appendVehicle(v)
+        #   print("Entry%d add %s"%(startIdx,v))
+        #   print("after automate")
+            
     def tick(self):
+        print("---------------------------------------------------")
         #do logic on models
         #call each existing model draw method by passing canvas
         self.automate()
+
+        #for i,e in enumerate(self.entrys):
+        #    print("%d Entry %s"%(i,str(e.readyQ)))
         
         #go through all entrys with at least one ready vehicle
         vehicleCandidates = [e.peekVehicle() for e in self.entrys if e.hasReadyVehicle()]
@@ -87,11 +99,14 @@ class Controller(object):
 
         
         for v in vehicleCandidates:
+        #    print("%s starts"%v)
             v.route.start.popVehicle()
         
-        print(self.runningQ)
+        #print(self.runningQ)
         #
-        self.runningQ[:] = [v for v in self.runningQ if v.move()]
+        for v in self.runningQ:
+            v.move()
+        #self.runningQ[:] = [v for v in self.runningQ if v.move()]
 
         
         

@@ -19,7 +19,7 @@ class Vehicle(object):
 
     def create(self):
         #direction = self.calcDirection()
-        self.id = self.canvas.create_image(self.cLoc.x+50,self.cLoc.y+50,anchor="center",image=self.photo)
+        self.id = self.canvas.create_image(self.cLoc.x,self.cLoc.y,anchor="center",image=self.photo)
 
     def __repr__(self):
         return "vehicle(%d)"%self.id
@@ -61,6 +61,7 @@ class Vehicle(object):
             return "west"
 
     def destroy(self):
+        print("%s die"%(self))
         self.canvas.delete(self.id)
 
     def arrived(self):
