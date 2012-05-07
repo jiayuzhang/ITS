@@ -3,6 +3,8 @@ from tkinter import *
 import threading
 from Vehicle import Vehicle
 from Controller import Controller
+from Point import Point
+from Route import Route
 import time
 
 class Simulation(Frame):
@@ -29,8 +31,9 @@ class Simulation(Frame):
 
         self.canvas = Canvas(self, height=700, width=900)
         self.canvas.grid(row=2, column=1, columnspan=3)
-
-        self.vehicle = Vehicle(1,"south",self.canvas)
+        
+        r = Route(Point(100, 300), 0, [Point(300,300)])
+        self.vehicle = Vehicle(1,r,self.canvas)
         self.vehicle.create()
 
     def startPressed(self, event):
@@ -61,7 +64,7 @@ class Simulation(Frame):
     def resetState(self):
         self.started = False
         self.stopped = True
-        
+
     def toggleBtn(self, btn):
         if btn['state'] == "disabled":
             btn['state'] = "normal"
