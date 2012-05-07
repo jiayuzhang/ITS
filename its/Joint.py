@@ -9,4 +9,4 @@ class Joint(Point):
 
     def dec(self):
         if len(self.timeRecord):
-            self.timeRecord = set([tm-1 for tm in self.timeRecord if tm>1])
+            self.timeRecord = set([tm-50 for tm in self.timeRecord if tm>50])

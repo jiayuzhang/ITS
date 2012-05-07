@@ -51,7 +51,11 @@ class Controller(object):
                             self.graph[entryCnt+i][entryCnt+j] = self.graph[entryCnt+j][entryCnt+i] = self.calcDistance(self.joints[i],self.joints[j]) if int(tokens[j])==1 else -1
 
     def calcDistance(self,p1,p2):
-        return int(sqrt(pow(p1.x-p2.x,2)+pow(p1.y-p2.y,2)))
+        if p1.x == p2.x:
+            return abs(p1.y-p2.y)
+        else:
+            return abs(p1.x-p2.x)
+        #return int(sqrt(pow(p1.x-p2.x,2)+pow(p1.y-p2.y,2)))
 
 
     def initCanvas(self):
@@ -75,7 +79,7 @@ class Controller(object):
 
     def automate(self):
         for i in range(len(self.entrys)):
-            if random.random() < 0.5:
+            if random.random() < 0.3:
             #   print("start automate")
                 startIdx,endIdx,jointIdxAry = self.gen.genVehicle()
                 r = Route(self.entrys[startIdx],self.entrys[endIdx],[self.joints[i-len(self.entrys)] for i in jointIdxAry])
@@ -90,47 +94,57 @@ class Controller(object):
         print("---------------------------------------------------")
         #do logic on models
         #call each existing model draw method by passing canvas
-
-        #for i,e in enumerate(self.entrys):
-        #    print("%d Entry %s"%(i,str(e.readyQ)))
-        
+      
         #go through all entrys with at least one ready vehicle
         vehicleCandidates = [e.peekVehicle() for e in self.entrys if e.hasReadyVehicle()]
 
-        #main logic, calculate based on current running v and candidate v
+        #for i,e in enumerate(self.entrys):
+        #   if e.hasReadyVehicle():
+        #      print("Entry%d has ready %s"%(i,e.peekVehicle()))
+        #print("candidate" + str(vehicleCandidates))
+
+        #for i,j in enumerate(self.joints):
+        #    print("Joint%d %s"%(i+len(self.entrys),str(j.timeRecord)))
         
-        #self.runningQ += vehicleCandidates
+        #main logic, calculate based on current running v and candidate v
         conflictGraph = {}
         #preprocess
         for v in vehicleCandidates[:]:
             conflictGraph[v] = []
             vj = v.route.joints
-            distance = self.calcDistance(v.route.start,vj[0])
-            for i in range(1,len(vj)):
-                if distance in vj[i-1].timeRecord:
+            distance = 0
+            for i in range(0,len(vj)):
+                if i==0:
+                    distance += self.calcDistance(v.route.start,vj[0])
+                else:
+                    distance += self.calcDistance(vj[i-1],vj[i])
+                    
+                if distance in vj[i].timeRecord:
                     vehicleCandidates.remove(v)
+                    del conflictGraph[v]
                     break
                 else:
-                    vj[i-1].tmpTimeRecord[v] = distance
-                    if distance not in vj[i-1].tmpReverseTimeRecord:
-                        vj[i-1].tmpReverseTimeRecord[distance] = [v]
+                    vj[i].tmpTimeRecord[v] = distance
+                    if distance not in vj[i].tmpReverseTimeRecord:
+                        vj[i].tmpReverseTimeRecord[distance] = [v]
                     else:
-                        for u in vj[i-1].tmpReverseTimeRecord[distance]:
+                        for u in vj[i].tmpReverseTimeRecord[distance]:
                             conflictGraph[u].append(v)
                             conflictGraph[v].append(u)
-                        vj[i-1].tmpReverseTimeRecord[distance].append(v)
-                    if i < len(vj)-1:
-                        distance += self.calcDistance(vj[i-1],vj[i])
+                        vj[i].tmpReverseTimeRecord[distance].append(v)
+
+        #print(conflictGraph)        
         #graphic algorithm
         self.vertexCover(conflictGraph)
         vehicleCandidates = list(conflictGraph.keys())
+        #print(str(vehicleCandidates))
         for j in self.joints:
             j.tmpReverseTimeRecord.clear()
             for k,vtime in j.tmpTimeRecord.items():
                 if k in vehicleCandidates:
                     j.timeRecord.add(vtime)
             j.tmpTimeRecord.clear()
-            
+        
         self.runningQ += vehicleCandidates
         
         self.runningQ[:] = [v for v in self.runningQ if v.move()]
@@ -141,6 +155,9 @@ class Controller(object):
         for v in vehicleCandidates:
             v.route.start.popVehicle()
 
+        #for i,j in enumerate(self.joints):
+        #    print("Joint%d %s"%(i+len(self.entrys),str(j.timeRecord)))
+            
         self.automate()
 
     def isDisconnected(self,graph):
