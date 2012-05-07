@@ -77,7 +77,11 @@ class Controller(object):
         for i in range(len(self.entrys)):
             if random.random() < 0.5:
             #   print("start automate")
+                t = [len(x.readyQ) for x in self.entrys]
+                avg = sum(t)/len(t)
                 startIdx,endIdx,jointIdxAry = self.gen.genVehicle()
+                if len(self.entrys[startIdx].readyQ) > avg + 3:
+                    continue
                 r = Route(self.entrys[startIdx],self.entrys[endIdx],[self.joints[i-len(self.entrys)] for i in jointIdxAry])
                 v = Vehicle(self.inc,r,self.canvas)
                 self.entrys[startIdx].appendVehicle(v)
@@ -160,6 +164,3 @@ class Controller(object):
             for u in graph[v]:
                 graph[u].remove(v)
             del graph[v]
-    
-        
-        
