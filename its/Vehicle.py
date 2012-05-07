@@ -29,7 +29,7 @@ class Vehicle(object):
         #print("create")
         self.id = self.canvas.create_image(self.x + self.offsetX,self.y + self.offsetY,image=self.photo)
         #self.canvas.update()
-        self.text = self.canvas.create_text(self.x + self.offsetX,self.y + self.offsetY-30, text=self.id)
+        #self.text = self.canvas.create_text(self.x + self.offsetX,self.y + self.offsetY-30, text=self.id)
 
     def __repr__(self):
         return "vehicle(%d)"%(self.id)
@@ -48,7 +48,7 @@ class Vehicle(object):
                 self.nLoc = self.route.joints[self.jointCount]
             self.__changeDirection()
         self.canvas.move(self.id, self.dx, self.dy)
-        self.canvas.move(self.text, self.dx, self.dy)
+        #self.canvas.move(self.text, self.dx, self.dy)
         self.x = self.x + self.dx
         self.y = self.y + self.dy
         

@@ -126,6 +126,9 @@ class Controller(object):
                 if distance in vj[i].timeRecord:
                     vehicleCandidates.remove(v)
                     del conflictGraph[v]
+                    for ke in conflictGraph.keys():
+                        if v in conflictGraph[ke]:
+                            conflictGraph[ke].remove(v)
                     break
                 else:
                     vj[i].tmpTimeRecord[v] = distance
@@ -137,12 +140,10 @@ class Controller(object):
                                 conflictGraph[u].append(v)
                                 conflictGraph[v].append(u)
                         vj[i].tmpReverseTimeRecord[distance].append(v)
-
-        #print(conflictGraph)        
+       
         #graphic algorithm
         self.vertexCover(conflictGraph)
         vehicleCandidates = list(conflictGraph.keys())
-        #print(str(vehicleCandidates))
         for j in self.joints:
             j.tmpReverseTimeRecord.clear()
             for k,vtime in j.tmpTimeRecord.items():
@@ -172,13 +173,23 @@ class Controller(object):
         maxd = -1
         for k,v in graph.items():
             if len(v) > maxd:
+                maxd = len(v)
                 maxv = k
         return maxv
 
+    def selectCoverVertexWithPriority(self,graph):
+        mind = -1
+        for k,v in graph.items():
+            div = len(v)/len(k.route.start.readyQ)
+            if div > mind:
+                mind = div
+                minv = k
+        return minv
         
     def vertexCover(self,graph):
         while not self.isDisconnected(graph):
-            v = self.maxDegreeVertex(graph)
+            #v = self.maxDegreeVertex(graph)
+            v = self.selectCoverVertexWithPriority(graph)
             for u in graph[v]:
                 graph[u].remove(v)
             del graph[v]
