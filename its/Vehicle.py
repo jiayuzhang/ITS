@@ -1,5 +1,6 @@
 from tkinter import *
 import tkinter as tk
+import random
 
 class Vehicle(object):
     def __init__(self, _speed, route, canvas):
@@ -11,32 +12,29 @@ class Vehicle(object):
         self.jointCount = 0
         self.nLoc = route.joints[self.jointCount]
         self.id = None
+        self.offsetX = 0
+        self.offsetY = 0
         self.direction = ""
-        
-        self.picEast = PhotoImage(file="resource/car-east.gif")
-        self.picWest = PhotoImage(file="resource/car-west.gif")
-        self.picNorth = PhotoImage(file="resource/car-north.gif")
-        self.picSouth = PhotoImage(file="resource/car-south.gif")
+        imgname = "resource/car"+str(random.randrange(1,5))
+        self.picEast = PhotoImage(file=imgname+"-east.gif")
+        self.picWest = PhotoImage(file=imgname+"-west.gif")
+        self.picNorth = PhotoImage(file=imgname+"-north.gif")
+        self.picSouth = PhotoImage(file=imgname+"-south.gif")
         self.canvas = canvas
         self.__changeDirection()
 
     def create(self):
         #direction = self.calcDirection()
         #print("%s started"%self)
-        #if self.direction == "north":
-        #    self.x = self.x + 9
-        #elif self.direction == "south":
-        #    self.x = self.x - 9
-        #elif self.direction == "east":
-        #    self.y = self.y + 9
-        #else:
-        #    self.y = self.y - 9
-        self.id = self.canvas.create_image(self.x,self.y,anchor="center",image=self.photo)
+        #print("create")
+        self.id = self.canvas.create_image(self.x + self.offsetX,self.y + self.offsetY,image=self.photo)
+        #self.canvas.update()
 
     def __repr__(self):
         return "vehicle(%d)"%self.id
 
     def move(self):
+        #print("move")
         if self.arrived():
             self.destroy()
             return False
@@ -51,25 +49,35 @@ class Vehicle(object):
         self.canvas.move(self.id, self.dx, self.dy)
         self.x = self.x + self.dx
         self.y = self.y + self.dy
+        return True
 
     def __changeDirection(self):
-        self.direction = self.__calcDirection()
+        direction = self.__calcDirection()
         self.dx, self.dy = 0, 0
-        if self.direction == "north":
+        if direction == "north":
             self.dy = -50
             self.photo = self.picNorth
-        elif self.direction == "south":
+            self.offsetX = 9
+            self.offsetY = 0
+        elif direction == "south":
             self.dy = 50
             self.photo = self.picSouth
-        elif self.direction == "east":
+            self.offsetX = -9
+            self.offsetY = 0
+        elif direction == "east":
             self.dx = 50
             self.photo = self.picEast
-        elif self.direction == "west":
+            self.offsetY = 9
+            self.offsetX = 0
+        elif direction == "west":
             self.dx = -50
             self.photo = self.picWest
+            self.offsetY = -9
+            self.offsetX = 0
 
         if self.id is not None:
             self.canvas.itemconfigure(self.id, image=self.photo)
+            self.canvas.coords(self.id, self.x + self.offsetX, self.y+self.offsetY)
 
     def __calcDirection(self):
         if self.x == self.nLoc.x:
