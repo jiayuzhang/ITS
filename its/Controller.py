@@ -106,7 +106,7 @@ class Controller(object):
             conflictGraph[v] = []
             vj = v.route.joints
             distance = self.calcDistance(v.route.start,vj[0])
-            for i in range(1:len(vj)):
+            for i in range(1,len(vj)):
                 if distance in vj[i-1].timeRecord:
                     vehicleCandidates.remove(v)
                     break
@@ -142,9 +142,6 @@ class Controller(object):
             v.route.start.popVehicle()
 
         self.automate()
-<<<<<<< HEAD
-
-
 
     def isDisconnected(self,graph):
         return sum([len(conflict) for conflict in graph.values()]) == 0
@@ -155,8 +152,7 @@ class Controller(object):
             if len(v) > maxd:
                 maxv = k
         return maxv
-=======
->>>>>>> 092fafaf10ff13e97d7437d694fc757a90dce9f5
+
         
     def vertexCover(self,graph):
         while not self.isDisconnected(graph):

@@ -20,7 +20,6 @@ class Entry(Point):
         if len(self.readyQ):
             self.readyQ[0].create()
         self.update()
-        return v
 
     def appendVehicle(self,v):
         self.readyQ.append(v)
