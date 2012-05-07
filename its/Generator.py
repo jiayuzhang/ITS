@@ -1,4 +1,5 @@
 import random as r
+import sys
 
 class Generator(object):
     def __init__(self, _entryIds, _adjcencyMatrix):
@@ -9,7 +10,7 @@ class Generator(object):
 
     def cost(self,i,j):
         if self.m[i][j] == -1:
-            return 10000 #assume it is max int
+            return sys.maxsize
         else:
             return self.m[i][j]
 
