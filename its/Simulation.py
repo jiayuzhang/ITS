@@ -32,7 +32,7 @@ class Simulation(Frame):
         self.canvas = Canvas(self, height=700, width=900)
         self.canvas.grid(row=2, column=1, columnspan=3)
         
-        r = Route(Point(100, 300), 0, [Point(300,300)])
+        r = Route(Point(100, 300, self.canvas), Point(300,500,self.canvas), [Point(300,300, self.canvas)])
         self.vehicle = Vehicle(1,r,self.canvas)
         self.vehicle.create()
 
@@ -91,7 +91,7 @@ class Simulation(Frame):
         #while loop
         while True:
             #time.sleep a tick time might be couple milliseconds
-            self.ctrl.tick()
+            #self.ctrl.tick()
             self.vehicle.move()
             self.canvas.update()
             time.sleep(0.05)

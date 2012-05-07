@@ -5,3 +5,5 @@ class Route(object):
         self.end = _end
         self.joints = _joints
 
+    def __repr__(self):
+        pass

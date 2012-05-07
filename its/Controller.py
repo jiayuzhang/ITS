@@ -3,6 +3,7 @@ from Joint import Joint
 from Generator import Generator
 from Route import Route
 from math import *
+from Vehicle import Vehicle
 
 class Controller(object):
     def __init__(self, _config, _canvas):
@@ -68,7 +69,6 @@ class Controller(object):
                 if self.graph[i][j] > 0:
                     point1 = self.entrys[j] if j < entrySize else self.joints[j-entrySize]
                     point2 = self.entrys[i] if i < entrySize else self.joints[i-entrySize]
-
                     #self.canvas.create_line(point1.x*100+50,point1.y*100+50,point2.x*100+50,point2.y*100+50,fill="black", width=12, joinstyle="round", capstyle="projecting")
                     self.canvas.create_line(point1.x*100+50,point1.y*100+50,point2.x*100+50,point2.y*100+50,fill="gray", width=10, joinstyle="round", capstyle="projecting")
 
@@ -79,7 +79,3 @@ class Controller(object):
         startIdx,endIdx,jointIdxAry = self.gen.genVehicle()
         r = Route(self.entrys[startIdx],self.entrys[endIdx],[self.joints[i-len(self.entrys)] for i in jointIdxAry])
         self.readyQ.append(Vehicle(5,r,self.canvas))
-
-
-        
-        
