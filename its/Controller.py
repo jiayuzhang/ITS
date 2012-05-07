@@ -102,7 +102,7 @@ class Controller(object):
         #    print("%s starts"%v)
             v.route.start.popVehicle()
         
-        #print(self.runningQ)
+        print(self.runningQ)
         #
         for v in self.runningQ:
             v.move()
