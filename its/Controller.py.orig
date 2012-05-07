@@ -1,5 +1,9 @@
 from Entry import Entry
 from Joint import Joint
+from Generator import Generator
+from Route import Route
+from math import *
+from Vehicle import Vehicle
 
 class Controller(object):
     def __init__(self, _config, _canvas):
@@ -11,6 +15,9 @@ class Controller(object):
         self.parseConfiguration(_config)
         self.initCanvas()
 
+        self.gen = Generator([i for i in range(len(self.entrys))],self.graph)
+        self.runningQ = []
+
     def parseConfiguration(self,fileName):
         X,Y = 0,1
         inFile = open(fileName, "r")
@@ -19,11 +26,7 @@ class Controller(object):
             if line == "#count":
                 entryCnt = int(inFile.readline().strip("\n")[6:]) #entry=.. no pairs of entry connected
                 jointCnt = int(inFile.readline().strip("\n")[6:]) #joint=.. at least one joint
-<<<<<<< HEAD
-                self.graph = [[False]*(entryCnt+jointCnt) for i in range(entryCnt+jointCnt)] #adj matrix
-=======
                 self.graph = [[0]*(entryCnt+jointCnt) for i in range(entryCnt+jointCnt)] #adj matrix
->>>>>>> 8441913cedc2eae1b0e13cea22ee0c168c66b8e8
             elif line == "#entry":
                 for i in range(entryCnt):
                     coords = [int(token) for token in inFile.readline().strip("\n").split()]
@@ -41,16 +44,12 @@ class Controller(object):
                 for i in range(jointCnt):
                     tokens = inFile.readline().strip("\n").split()
                     for j in range(jointCnt):
-<<<<<<< HEAD
-                        self.graph[entryCnt+i][entryCnt+j] = self.graph[entryCnt+j][entryCnt+i] = True if int(tokens[j])==1 else False
-=======
                         if i != j:
                             self.graph[entryCnt+i][entryCnt+j] = self.graph[entryCnt+j][entryCnt+i] = self.calcDistance(self.joints[i],self.joints[j]) if int(tokens[j])==1 else -1
 
     def calcDistance(self,p1,p2):
         return int(sqrt(pow(p1.x-p2.x,2)+pow(p1.y-p2.y,2)))
 
->>>>>>> 8441913cedc2eae1b0e13cea22ee0c168c66b8e8
 
     def initCanvas(self):
         print("##########################")
@@ -66,24 +65,37 @@ class Controller(object):
         for i in range(size):
             print(i)
             for j in range(i+1,size):
-<<<<<<< HEAD
-                print(j)
-                print(self.graph[i][j])
-                if self.graph[i][j]:
-                    point1 = self.entrys[i] if i < entrySize else self.joints[i-entrySize]
-                    point2 = self.entrys[j] if j < entrySize else self.joints[j-entrySize]
-                    print(point1.x, point1.y)
-                    print(point2.x, point2.y)
-                    self.canvas.create_line(point1.x * 10, point2.y * 10, point2.x * 10, point2.y * 10,fill="black")
-        
-=======
                 if self.graph[i][j] > 0:
-                    point1,point2 = self.entrys[i] if i < entrySize else self.joints[i-entrySize],self.entrys[j] if j < entrySize else self.joints[j-entrySize]
-                    self.canvas.create_line(point1.x,point2.y,point2.x,point2.y,fill="black")
+                    point1 = self.entrys[j] if j < entrySize else self.joints[j-entrySize]
+                    point2 = self.entrys[i] if i < entrySize else self.joints[i-entrySize]
+                    #self.canvas.create_line(point1.x*100+50,point1.y*100+50,point2.x*100+50,point2.y*100+50,fill="black", width=12, joinstyle="round", capstyle="projecting")
+                    self.canvas.create_line(point1.x*100+50,point1.y*100+50,point2.x*100+50,point2.y*100+50,fill="gray", width=10, joinstyle="round", capstyle="projecting")
 
->>>>>>> 8441913cedc2eae1b0e13cea22ee0c168c66b8e8
+    def automate(self):
+        startIdx,endIdx,jointIdxAry = self.gen.genVehicle()
+        r = Route(self.entrys[startIdx],self.entrys[endIdx],[self.joints[i-len(self.entrys)] for i in jointIdxAry])
+        self.entrys[startIdx].appendVehicle(Vehicle(5,r,self.canvas))
     
     def tick(self):
         #do logic on models
         #call each existing model draw method by passing canvas
-        pass
+<<<<<<< HEAD
+        self.automate()
+
+        #go through all entrys with at least one ready vehicle
+        vehicleCandidates = [e.peekVehicle() for e in self.entrys if e.hasReadyVehicle()]
+
+        #main logic, calculate based on current running v and candidate v
+        self.runnigQ += vehicleCandidates
+
+        #
+        self.runningQ[:] = [v for v in self.runningQ if v.move()]
+
+        
+        
+        
+=======
+        startIdx,endIdx,jointIdxAry = self.gen.genVehicle()
+        r = Route(self.entrys[startIdx],self.entrys[endIdx],[self.joints[i-len(self.entrys)] for i in jointIdxAry])
+        self.readyQ.append(Vehicle(5,r,self.canvas))
+>>>>>>> 10fba03380b81cb89a2cc6b36b83f7ae605c5a4a
