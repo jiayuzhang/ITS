@@ -1,0 +1,22 @@
+#count
+entry=3
+joint=2
+
+#entry
+100 100
+300 300
+500 100
+
+#joint
+200 100
+200 300
+
+#entry_joint
+1 0
+0 1
+1 0
+
+#joint_joint
+0 1
+1 0
+

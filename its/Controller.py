@@ -71,7 +71,7 @@ class Controller(object):
 
                     #self.canvas.create_line(point1.x*100+50,point1.y*100+50,point2.x*100+50,point2.y*100+50,fill="black", width=12, joinstyle="round", capstyle="projecting")
                     self.canvas.create_line(point1.x,point1.y,point2.x,point2.y,fill="gray", width=40, joinstyle="round", capstyle="projecting")
-                    self.canvas.create_line(point1.x,point1.y,point2.x,point2.y,fill="orange", width=2, joinstyle="round", capstyle="butt", dash=(5,5))
+                    self.canvas.create_line(point1.x,point1.y,point2.x,point2.y,fill="white", width=2, joinstyle="round", capstyle="butt", dash=(5,5))
 
     def automate(self):
         for i in range(len(self.entrys)):
@@ -88,6 +88,9 @@ class Controller(object):
              
     def tick(self):
         print("---------------------------------------------------")
+        #do logic on models
+        #call each existing model draw method by passing canvas
+
         #for i,e in enumerate(self.entrys):
         #    print("%d Entry %s"%(i,str(e.readyQ)))
         
@@ -139,6 +142,7 @@ class Controller(object):
             v.route.start.popVehicle()
 
         self.automate()
+<<<<<<< HEAD
 
 
 
@@ -151,6 +155,8 @@ class Controller(object):
             if len(v) > maxd:
                 maxv = k
         return maxv
+=======
+>>>>>>> 092fafaf10ff13e97d7437d694fc757a90dce9f5
         
     def vertexCover(self,graph):
         while not self.isDisconnected(graph):
