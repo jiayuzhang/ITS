@@ -2,8 +2,8 @@ from Entry import Entry
 from Joint import Joint
 from Generator import Generator
 from Route import Route
-from math import *
 from Vehicle import Vehicle
+from math import *
 
 class Controller(object):
     def __init__(self, _config, _canvas):
@@ -14,7 +14,7 @@ class Controller(object):
 
         self.parseConfiguration(_config)
         self.initCanvas()
-
+        
         self.gen = Generator([i for i in range(len(self.entrys))],self.graph)
         self.runningQ = []
 
@@ -26,7 +26,7 @@ class Controller(object):
             if line == "#count":
                 entryCnt = int(inFile.readline().strip("\n")[6:]) #entry=.. no pairs of entry connected
                 jointCnt = int(inFile.readline().strip("\n")[6:]) #joint=.. at least one joint
-                self.graph = [[0]*(entryCnt+jointCnt) for i in range(entryCnt+jointCnt)] #adj matrix
+                self.graph = [[-1]*(entryCnt+jointCnt) for i in range(entryCnt+jointCnt)] #adj matrix
             elif line == "#entry":
                 for i in range(entryCnt):
                     coords = [int(token) for token in inFile.readline().strip("\n").split()]
@@ -39,7 +39,7 @@ class Controller(object):
                 for i in range(entryCnt):
                     tokens = inFile.readline().strip("\n").split()
                     for j in range(jointCnt):
-                        self.graph[i][entryCnt+j] = self.graph[entryCnt+j][i] = True if int(tokens[j])==1 else False
+                        self.graph[i][entryCnt+j] = self.graph[entryCnt+j][i] = self.calcDistance(self.entrys[i],self.joints[j]) if int(tokens[j])==1 else -1
             elif line == "#joint_joint":
                 for i in range(jointCnt):
                     tokens = inFile.readline().strip("\n").split()
@@ -52,7 +52,6 @@ class Controller(object):
 
 
     def initCanvas(self):
-        print("##########################")
         #for entry in self.entrys:
         #    entry.draw(self.canvas)
         #for joint in self.joints:
@@ -61,13 +60,12 @@ class Controller(object):
         entrySize = len(self.entrys)
         jointSize = len(self.joints)
         size = entrySize + jointSize
-        print(size)
         for i in range(size):
-            print(i)
             for j in range(i+1,size):
                 if self.graph[i][j] > 0:
                     point1 = self.entrys[j] if j < entrySize else self.joints[j-entrySize]
                     point2 = self.entrys[i] if i < entrySize else self.joints[i-entrySize]
+
                     #self.canvas.create_line(point1.x*100+50,point1.y*100+50,point2.x*100+50,point2.y*100+50,fill="black", width=12, joinstyle="round", capstyle="projecting")
                     self.canvas.create_line(point1.x*100+50,point1.y*100+50,point2.x*100+50,point2.y*100+50,fill="gray", width=10, joinstyle="round", capstyle="projecting")
 
@@ -80,13 +78,18 @@ class Controller(object):
         #do logic on models
         #call each existing model draw method by passing canvas
         self.automate()
-
+        
         #go through all entrys with at least one ready vehicle
         vehicleCandidates = [e.peekVehicle() for e in self.entrys if e.hasReadyVehicle()]
 
         #main logic, calculate based on current running v and candidate v
-        self.runnigQ += vehicleCandidates
+        self.runningQ += vehicleCandidates
 
+        
+        for v in vehicleCandidates:
+            v.route.start.popVehicle()
+        
+        print(self.runningQ)
         #
         self.runningQ[:] = [v for v in self.runningQ if v.move()]
 
