@@ -101,7 +101,7 @@ class Simulation(Frame):
 def main():
     root = Tk()
     root.title("Intelligent Transportation Simulation")
-    sm = Simulation(root, config="init.config~")
+    sm = Simulation(root, config="init.config")
 
     #sm.start()
 

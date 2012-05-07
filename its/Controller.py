@@ -79,7 +79,7 @@ class Controller(object):
 
     def automate(self):
         for i in range(len(self.entrys)):
-            if random.random() < 0.3:
+            if random.random() < 0.5:
             #   print("start automate")
                 t = [len(x.readyQ) for x in self.entrys]
                 avg = sum(t)/len(t)
@@ -133,8 +133,9 @@ class Controller(object):
                         vj[i].tmpReverseTimeRecord[distance] = [v]
                     else:
                         for u in vj[i].tmpReverseTimeRecord[distance]:
-                            conflictGraph[u].append(v)
-                            conflictGraph[v].append(u)
+                            if u in conflictGraph.keys():
+                                conflictGraph[u].append(v)
+                                conflictGraph[v].append(u)
                         vj[i].tmpReverseTimeRecord[distance].append(v)
 
         #print(conflictGraph)        
