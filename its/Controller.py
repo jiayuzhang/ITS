@@ -67,7 +67,7 @@ class Controller(object):
                     point2 = self.entrys[i] if i < entrySize else self.joints[i-entrySize]
 
                     #self.canvas.create_line(point1.x*100+50,point1.y*100+50,point2.x*100+50,point2.y*100+50,fill="black", width=12, joinstyle="round", capstyle="projecting")
-                    self.canvas.create_line(point1.x*100+50,point1.y*100+50,point2.x*100+50,point2.y*100+50,fill="gray", width=10, joinstyle="round", capstyle="projecting")
+                    self.canvas.create_line(point1.x,point1.y,point2.x,point2.y,fill="gray", width=40, joinstyle="round", capstyle="projecting")
 
     def automate(self):
         startIdx,endIdx,jointIdxAry = self.gen.genVehicle()
@@ -91,8 +91,9 @@ class Controller(object):
         
         print(self.runningQ)
         #
-        self.runningQ[:] = [v for v in self.runningQ if v.move()]
-
+        #self.runningQ[:] = [v for v in self.runningQ if v.move()]
+        for v in self.runningQ:
+            v.move()
         
         
         
