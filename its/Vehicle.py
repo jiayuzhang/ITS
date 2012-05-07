@@ -96,3 +96,9 @@ class Vehicle(object):
 
     def arrived(self):
         return self.x == self.route.end.x and self.y == self.route.end.y
+
+    def __hash__(self):
+        return self.id
+
+    def __eq__(self,other):
+        return self.id == other.id
