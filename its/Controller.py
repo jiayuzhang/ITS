@@ -68,6 +68,7 @@ class Controller(object):
 
                     #self.canvas.create_line(point1.x*100+50,point1.y*100+50,point2.x*100+50,point2.y*100+50,fill="black", width=12, joinstyle="round", capstyle="projecting")
                     self.canvas.create_line(point1.x,point1.y,point2.x,point2.y,fill="gray", width=40, joinstyle="round", capstyle="projecting")
+                    self.canvas.create_line(point1.x,point1.y,point2.x,point2.y,fill="orange", width=2, joinstyle="round", capstyle="butt", dash=(5,5))
 
     def automate(self):
         startIdx,endIdx,jointIdxAry = self.gen.genVehicle()

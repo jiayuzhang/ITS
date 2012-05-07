@@ -11,6 +11,7 @@ class Vehicle(object):
         self.jointCount = 0
         self.nLoc = route.joints[self.jointCount]
         self.id = None
+        self.direction = ""
         
         self.picEast = PhotoImage(file="resource/car-east.gif")
         self.picWest = PhotoImage(file="resource/car-west.gif")
@@ -21,15 +22,22 @@ class Vehicle(object):
 
     def create(self):
         #direction = self.calcDirection()
-        x,y = self.x,self.y
-        self.id = self.canvas.create_image(x,y,anchor="center",image=self.photo)
+        #print("%s started"%self)
+        #if self.direction == "north":
+        #    self.x = self.x + 9
+        #elif self.direction == "south":
+        #    self.x = self.x - 9
+        #elif self.direction == "east":
+        #    self.y = self.y + 9
+        #else:
+        #    self.y = self.y - 9
+        self.id = self.canvas.create_image(self.x,self.y,anchor="center",image=self.photo)
 
     def __repr__(self):
         return "vehicle(%d)"%self.id
 
     def move(self):
         if self.arrived():
-            print("arrived")
             self.destroy()
             return False
         if self.x == self.nLoc.x and self.y == self.nLoc.y:
@@ -45,18 +53,18 @@ class Vehicle(object):
         self.y = self.y + self.dy
 
     def __changeDirection(self):
-        direction = self.__calcDirection()
+        self.direction = self.__calcDirection()
         self.dx, self.dy = 0, 0
-        if direction == "north":
+        if self.direction == "north":
             self.dy = -50
             self.photo = self.picNorth
-        elif direction == "south":
+        elif self.direction == "south":
             self.dy = 50
             self.photo = self.picSouth
-        elif direction == "east":
+        elif self.direction == "east":
             self.dx = 50
             self.photo = self.picEast
-        elif direction == "west":
+        elif self.direction == "west":
             self.dx = -50
             self.photo = self.picWest
 
@@ -75,7 +83,7 @@ class Vehicle(object):
             return "west"
 
     def destroy(self):
-        #print(self)
+        print("%s arrived"%self)
         self.canvas.delete(self.id)
 
     def arrived(self):
