@@ -16,7 +16,6 @@ class Controller(object):
         self.initCanvas()
         
         self.gen = Generator([i for i in range(len(self.entrys))],self.graph)
-        self.readyQ = []
         self.runningQ = []
 
     def parseConfiguration(self,fileName):
@@ -68,8 +67,12 @@ class Controller(object):
                     point2 = self.entrys[i] if i < entrySize else self.joints[i-entrySize]
 
                     #self.canvas.create_line(point1.x*100+50,point1.y*100+50,point2.x*100+50,point2.y*100+50,fill="black", width=12, joinstyle="round", capstyle="projecting")
-                    self.canvas.create_line(point1.x*100+50,point1.y*100+50,point2.x*100+50,point2.y*100+50,fill="gray", width=40, joinstyle="round", capstyle="projecting")
+                    self.canvas.create_line(point1.x*100+50,point1.y*100+50,point2.x*100+50,point2.y*100+50,fill="gray", width=10, joinstyle="round", capstyle="projecting")
 
+    def automate(self):
+        startIdx,endIdx,jointIdxAry = self.gen.genVehicle()
+        r = Route(self.entrys[startIdx],self.entrys[endIdx],[self.joints[i-len(self.entrys)] for i in jointIdxAry])
+        self.entrys[startIdx].appendVehicle(Vehicle(5,r,self.canvas))
     
     def tick(self):
         #do logic on models
