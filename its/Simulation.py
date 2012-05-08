@@ -29,7 +29,7 @@ class Simulation(Frame):
         self.stepBtn = Button(self,text="Step")
         self.stepBtn.grid(column=3, row=1)
 
-        self.canvas = Canvas(self, height=700, width=900)
+        self.canvas = Canvas(self, height=900, width=1600)
         self.canvas.grid(row=2, column=1, columnspan=3)
         
         #r = Route(Point(100, 300, self.canvas), Point(300,500,self.canvas), [Point(300,300, self.canvas)])
