@@ -24,7 +24,9 @@ class Vehicle(object):
         self.picSouth = PhotoImage(file=imgname+"-south.gif")
         self.canvas = canvas
         self.__changeDirection()
-
+        self.dx *= self.wr
+        self.dy *= self.hr
+        
     def create(self):
         #direction = self.calcDirection()
         #print("%s started"%self)
@@ -37,7 +39,7 @@ class Vehicle(object):
         return "vehicle(%d) x=%f,y=%f"%(self.id,self.x,self.y)
 
     def move(self):
-        #print("move")
+        print("move,cx=%f,cy=%f,nx=%f,ny=%f"%(self.x,self.y,self.nLoc.x,self.nLoc.y))
         if self.arrived():
             self.destroy()
             return False
@@ -82,7 +84,7 @@ class Vehicle(object):
             self.photo = self.picWest
             self.offsetY = -9
             self.offsetX = 0
-
+        
         if self.id is not None:
             self.canvas.itemconfigure(self.id, image=self.photo)
             self.canvas.coords(self.id, self.x + self.offsetX, self.y+self.offsetY)
