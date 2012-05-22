@@ -14,11 +14,11 @@ class Simulation(Frame):
         self.stopped = True
         self.started = False
         
-        self.initWidgets()
+        self.initWidgets(root.winfo_screenwidth(),root.winfo_screenheight())
         self.initEvents()
-        self.initController(config)
+        self.initController(config,root.winfo_screenwidth(),root.winfo_screenheight())
 
-    def initWidgets(self):
+    def initWidgets(self,sw,sh):
         self.startBtn = Button(self,text="Start")
         self.startBtn.grid(column=1, row=1)
 
@@ -29,7 +29,7 @@ class Simulation(Frame):
         self.stepBtn = Button(self,text="Step")
         self.stepBtn.grid(column=3, row=1)
 
-        self.canvas = Canvas(self, height=900, width=1600)
+        self.canvas = Canvas(self, height=sh, width=sw)
         self.canvas.grid(row=2, column=1, columnspan=3)
         
         #r = Route(Point(100, 300, self.canvas), Point(300,500,self.canvas), [Point(300,300, self.canvas)])
@@ -84,8 +84,9 @@ class Simulation(Frame):
         self.stopBtn.bind("<Button-1>", self.stopPressed)
         self.stepBtn.bind("<Button-1>", self.stepPressed)
 
-    def initController(self, config):
-        self.ctrl = Controller(config, self.canvas)
+    def initController(self, config, sw, sh):
+        mengqiWidth,mengqiHeight = 1600,900
+        self.ctrl = Controller(config, self.canvas, sw/mengqiWidth, sh/mengqiHeight)
 
     def start(self):
         #while loop

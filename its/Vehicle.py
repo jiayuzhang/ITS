@@ -3,7 +3,9 @@ import tkinter as tk
 import random
 
 class Vehicle(object):
-    def __init__(self, _speed, route, canvas):
+    def __init__(self, _speed, route, canvas, _widthRadio, _heightRadio):
+        self.wr = _widthRadio
+        self.hr = _heightRadio
         self.speed = _speed
         self.cLoc = route.start
         self.x = self.cLoc.x
@@ -32,14 +34,14 @@ class Vehicle(object):
         #self.text = self.canvas.create_text(self.x + self.offsetX,self.y + self.offsetY-30, text=self.id)
 
     def __repr__(self):
-        return "vehicle(%d)"%(self.id)
+        return "vehicle(%d) x=%f,y=%f"%(self.id,self.x,self.y)
 
     def move(self):
         #print("move")
         if self.arrived():
             self.destroy()
             return False
-        if self.x == self.nLoc.x and self.y == self.nLoc.y:
+        if self.nLoc.x-1<=self.x <= self.nLoc.x+1 and self.nLoc.y-1<=self.y <= self.nLoc.y+1:
             self.jointCount = self.jointCount + 1
             self.cLoc = self.nLoc
             if self.jointCount == len(self.route.joints):
@@ -47,6 +49,8 @@ class Vehicle(object):
             else:
                 self.nLoc = self.route.joints[self.jointCount]
             self.__changeDirection()
+            self.dx *= self.wr
+            self.dy *= self.hr
         self.canvas.move(self.id, self.dx, self.dy)
         #self.canvas.move(self.text, self.dx, self.dy)
         self.x = self.x + self.dx
@@ -84,12 +88,12 @@ class Vehicle(object):
             self.canvas.coords(self.id, self.x + self.offsetX, self.y+self.offsetY)
 
     def __calcDirection(self):
-        if self.x == self.nLoc.x:
-            if self.cLoc.y < self.nLoc.y:
+        if self.nLoc.x-1 <= self.x <= self.nLoc.x+1:
+            if self.cLoc.y < self.nLoc.y-1:
                 return "south"
             else:
                 return "north"
-        elif self.x < self.nLoc.x:
+        elif self.x < self.nLoc.x-1:
             return "east"
         else:
             return "west"

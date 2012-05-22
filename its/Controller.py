@@ -7,13 +7,15 @@ from math import *
 import random
 
 class Controller(object):
-    def __init__(self, _config, _canvas):
+    def __init__(self, _config, _canvas, widthRadio, heightRadio):
+        self.wr = widthRadio
+        self.hr = heightRadio
         self.canvas = _canvas
         self.entrys = []
         self.joints = []
         self.graph = None
 
-        self.parseConfiguration(_config)
+        self.parseConfiguration(_config,widthRadio,heightRadio)
         self.initCanvas()
         
         self.gen = Generator([i for i in range(len(self.entrys))],self.graph)
@@ -21,7 +23,7 @@ class Controller(object):
 
         self.inc = 0
 
-    def parseConfiguration(self,fileName):
+    def parseConfiguration(self,fileName,wr,hr):
         X,Y = 0,1
         inFile = open(fileName, "r")
         for line in inFile:
@@ -33,11 +35,11 @@ class Controller(object):
             elif line == "#entry":
                 for i in range(entryCnt):
                     coords = [int(token) for token in inFile.readline().strip("\n").split()]
-                    self.entrys.append(Entry(coords[X],coords[Y],self.canvas))
+                    self.entrys.append(Entry(coords[X]*wr,coords[Y]*hr,self.canvas))
             elif line == "#joint":
                 for i in range(jointCnt):
                     coords = [int(token) for token in inFile.readline().strip("\n").split()]
-                    self.joints.append(Joint(coords[X],coords[Y],self.canvas))
+                    self.joints.append(Joint(coords[X]*wr,coords[Y]*hr,self.canvas))
             elif line == "#entry_joint":
                 for i in range(entryCnt):
                     tokens = inFile.readline().strip("\n").split()
@@ -87,7 +89,7 @@ class Controller(object):
                 if len(self.entrys[startIdx].readyQ) > avg + 3:
                     continue
                 r = Route(self.entrys[startIdx],self.entrys[endIdx],[self.joints[i-len(self.entrys)] for i in jointIdxAry])
-                v = Vehicle(self.inc,r,self.canvas)
+                v = Vehicle(self.inc,r,self.canvas,self.wr,self.hr)
                 self.entrys[startIdx].appendVehicle(v)
             #   print("Entry%d add %s"%(startIdx,v))
             #   print("after automate")
