@@ -47,8 +47,10 @@ class Vehicle(object):
             self.jointCount = self.jointCount + 1
             self.cLoc = self.nLoc
             if self.jointCount == len(self.route.joints):
+                print(self,"end")
                 self.nLoc = self.route.end
             else:
+                print(self,"jointCount: ",self.jointCount,"joints: ", len(self.route.joints))
                 self.nLoc = self.route.joints[self.jointCount]
             self.__changeDirection()
             self.dx *= self.wr
@@ -105,7 +107,7 @@ class Vehicle(object):
         self.canvas.delete(self.id)
 
     def arrived(self):
-        return self.x == self.route.end.x and self.y == self.route.end.y
+        return self.route.end.x-1 <= self.x <= self.route.end.x+1 and self.route.end.y-1 <= self.y <= self.route.end.y+1
 
     def __hash__(self):
         return self.id
