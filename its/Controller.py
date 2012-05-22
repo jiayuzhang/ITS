@@ -125,7 +125,8 @@ class Controller(object):
                 else:
                     distance += self.calcDistance(vj[i-1],vj[i])
                     
-                if distance in vj[i].timeRecord:
+                #if distance in vj[i].timeRecord:
+                if self.withinSet(distance, vj[i].timeRecord):
                     vehicleCandidates.remove(v)
                     del conflictGraph[v]
                     for ke in conflictGraph.keys():
@@ -134,7 +135,8 @@ class Controller(object):
                     break
                 else:
                     vj[i].tmpTimeRecord[v] = distance
-                    if distance not in vj[i].tmpReverseTimeRecord:
+                    #if distance not in vj[i].tmpReverseTimeRecord:
+                    if not self.withinSet(distance, vj[i].tmpReverseTimeRecord):
                         vj[i].tmpReverseTimeRecord[distance] = [v]
                     else:
                         for u in vj[i].tmpReverseTimeRecord[distance]:
@@ -167,6 +169,12 @@ class Controller(object):
         #    print("Joint%d %s"%(i+len(self.entrys),str(j.timeRecord)))
             
         self.automate()
+
+    def withinSet(self,_value,_set,offset=1):
+        for v in _set:
+            if v-offset<=_value<=v+offset:
+                return True
+        return False
 
     def isDisconnected(self,graph):
         return sum([len(conflict) for conflict in graph.values()]) == 0
